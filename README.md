@@ -6,7 +6,7 @@ This is a demo which uses the GitHub API to generate a list of open PRs, as well
 
 ## Installation
 
-After installing the repository you'll need to run `yarn` to install the dependencies it requires:
+Currently this is only usable from source, so you'll need to clone this repository and run `yarn` to install the dependencies it requires:
 
 ```shellsession
 $ yarn
