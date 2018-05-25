@@ -1,0 +1,20 @@
+{
+  "name": "review-queue",
+  "version": "1.0.0",
+  "author": "Brendan Forster <github@brendanforster.com>",
+  "license": "MIT",
+  "scripts": {
+    "review-queue": "ts-node script/review-queue.ts"
+  },
+  "dependencies": {
+    "@octokit/rest": "^15.6.2",
+    "chalk": "^2.4.1",
+    "moment": "^2.22.1",
+    "ts-node": "^6.0.3",
+    "typescript": "^2.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^10.1.2",
+    "prettier": "^1.12.1"
+  }
+}
