@@ -36,15 +36,15 @@ function outputReviewSummary(
     if (mostRecentReview.state === 'CHANGES_REQUESTED') {
       console.log(
         ` - 🔍 ${chalk.red(
-          `You reviewed this PR ${toRelativeTime(
+          `You asked changes to this PR${toRelativeTime(
             mostRecentReview.submitted_at
-          )} and asked for changes`
+          )}`
         )}`
       )
     } else if (mostRecentReview.state === 'APPROVED') {
       console.log(
         ` - 🔍 ${chalk.green(
-          `You have approved this PR ${toRelativeTime(
+          `You approved this PR ${toRelativeTime(
             mostRecentReview.submitted_at
           )}`
         )}`
