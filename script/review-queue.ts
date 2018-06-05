@@ -36,7 +36,7 @@ function outputReviewSummary(
     if (mostRecentReview.state === 'CHANGES_REQUESTED') {
       console.log(
         ` - 🔍 ${chalk.red(
-          `You asked changes to this PR${toRelativeTime(
+          `You asked changes to this PR ${toRelativeTime(
             mostRecentReview.submitted_at
           )}`
         )}`
