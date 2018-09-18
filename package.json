@@ -7,14 +7,14 @@
     "review-queue": "ts-node script/review-queue.ts"
   },
   "dependencies": {
-    "@octokit/rest": "^15.6.2",
+    "@octokit/rest": "^15.11.4",
     "chalk": "^2.4.1",
-    "moment": "^2.22.1",
-    "ts-node": "^6.0.3",
-    "typescript": "^2.8.3"
+    "moment": "^2.22.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3"
   },
   "devDependencies": {
-    "@types/node": "^10.1.2",
-    "prettier": "^1.12.1"
+    "@types/node": "^10.10.1",
+    "prettier": "^1.14.2"
   }
 }
