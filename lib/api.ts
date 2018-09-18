@@ -8,12 +8,15 @@ function delay(ms: number): Promise<void> {
   })
 }
 
-type Comment = {
+export interface User {
+  readonly login: string
+}
+
+export interface Comment {
+  readonly created_at: string
   readonly updated_at: string
   readonly body: string
-  readonly user: {
-    readonly login: string
-  }
+  readonly user: User
 }
 
 const per_page = 100
