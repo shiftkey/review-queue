@@ -3,20 +3,26 @@ import { ignorePullRequestAuthors } from '../lib/config'
 import * as moment from 'moment'
 import chalk from 'chalk'
 
-import {
-  GitHubClient,
-  PullRequest,
-  Commit,
-  Comment,
-  PullRequestReview,
-} from '../lib/api'
+import { GitHubClient, Comment, User } from '../lib/api'
+
+interface PullRequestReview {
+  readonly id: number
+  readonly state: string
+  readonly user: User
+  readonly submitted_at: string
+}
 
 interface PullRequestSummary {
-  readonly pr: PullRequest
+  readonly pr: {
+    readonly title: string
+    readonly user: User
+    readonly number: number
+    readonly assignee: User
+  }
   readonly mergeable: boolean
   readonly lastCommentByAuthor: Comment | null
   readonly lastCommentByMe: Comment | null
-  readonly commitsByMe: ReadonlyArray<Commit>
+  readonly commitsByMe: ReadonlyArray<unknown>
   readonly reviews: ReadonlyArray<PullRequestReview>
 }
 
@@ -156,9 +162,12 @@ async function run(token: string) {
       continue
     }
 
-    const mergeable =
-      pr.mergeable != null
-        ? pr.mergeable
+    // ugh, hacks
+    const unknownPR = pr as any
+
+    const mergeable: boolean =
+      unknownPR.mergeable != null
+        ? unknownPR.mergeable
         : await client.getMergeableState(pr.number)
 
     const reviews = await client.getReviewsFor(pr)
@@ -169,14 +178,31 @@ async function run(token: string) {
     )
     const lastCommentByMe = await client.getLatestCommentBy(pr, me)
     const commitsByMe = await client.getCommitsBy(pr, me)
+    const prOutput = {
+      title: pr.title,
+      user: pr.user,
+      number: pr.number,
+      assignee: pr.assignee,
+    }
+
+    const reviewsOutput = reviews.map<PullRequestReview>(r => {
+      // ugh, hacks
+      const rAny = r as any
+      return {
+        id: r.id,
+        state: r.state,
+        user: r.user,
+        submitted_at: rAny.submitted_at,
+      }
+    })
     outputPullRequestStatus(
       {
-        pr,
+        pr: prOutput,
         mergeable,
         lastCommentByAuthor,
         lastCommentByMe,
         commitsByMe,
-        reviews,
+        reviews: reviewsOutput,
       },
       me
     )

@@ -12,35 +12,11 @@ export interface User {
   readonly login: string
 }
 
-export interface PullRequest {
-  readonly number: number
-  readonly title: string
-  readonly user: User
-  readonly assignee: User | null
-  readonly updated_at: string
-  readonly mergeable: boolean | null
-}
-
 export interface Comment {
-  readonly body: string
-  readonly user: User
   readonly created_at: string
   readonly updated_at: string
-}
-
-export interface Commit {
-  readonly author: User | null
-  readonly committer: User | null
-}
-
-export interface PullRequestReview {
+  readonly body: string
   readonly user: User
-  readonly state: 'COMMENTED' | 'APPROVED' | 'CHANGES_REQUESTED'
-  readonly submitted_at: string
-}
-
-interface OctokitResponse<T> {
-  readonly data: T
 }
 
 const per_page = 100
@@ -59,18 +35,16 @@ export class GitHubClient {
     })
   }
 
-  public getUser = async (): Promise<User> => {
-    const user: OctokitResponse<User> = await this.client.users.get({})
+  public getUser = async () => {
+    const user = await this.client.users.get({})
     return user.data
   }
 
   public getOpenPullRequests = async (
     sort: 'created' | 'updated' | 'popularity' | 'long-running' = 'updated',
     direction: 'asc' | 'desc' = 'asc'
-  ): Promise<ReadonlyArray<PullRequest>> => {
-    const result: OctokitResponse<
-      Array<PullRequest>
-    > = await this.client.pullRequests.getAll({
+  ) => {
+    const result = await this.client.pullRequests.getAll({
       owner: this.owner,
       repo: this.repo,
       state: 'open',
@@ -81,10 +55,8 @@ export class GitHubClient {
     return result.data
   }
 
-  public getPullRequest = async (number: number): Promise<PullRequest> => {
-    const result: OctokitResponse<
-      PullRequest
-    > = await this.client.pullRequests.get({
+  public getPullRequest = async (number: number) => {
+    const result = await this.client.pullRequests.get({
       owner: this.owner,
       repo: this.repo,
       number,
@@ -92,13 +64,8 @@ export class GitHubClient {
     return result.data
   }
 
-  public getLastPullRequestComment = async (
-    number: number,
-    login: string
-  ): Promise<Comment | null> => {
-    const pullRequestComments: OctokitResponse<
-      Array<Comment>
-    > = await this.client.pullRequests.getComments({
+  public getLastPullRequestComment = async (number: number, login: string) => {
+    const pullRequestComments = await this.client.pullRequests.getComments({
       owner: this.owner,
       repo: this.repo,
       number,
@@ -119,28 +86,18 @@ export class GitHubClient {
     return lastPRComment
   }
 
-  public getReviewsFor = async (
-    pr: PullRequest
-  ): Promise<ReadonlyArray<PullRequestReview>> => {
-    const result: OctokitResponse<
-      Array<PullRequestReview>
-    > = await this.client.pullRequests.getReviews({
+  public getReviewsFor = async (pr: { number: number }) => {
+    const result = await this.client.pullRequests.getReviews({
       owner: this.owner,
       repo: this.repo,
       number: pr.number,
       per_page,
     })
-
     return result.data
   }
 
-  public getLastIssueComment = async (
-    number: number,
-    login: string
-  ): Promise<Comment | null> => {
-    const issueComments: OctokitResponse<
-      Array<Comment>
-    > = await this.client.issues.getComments({
+  public getLastIssueComment = async (number: number, login: string) => {
+    const issueComments = await this.client.issues.getComments({
       owner: this.owner,
       repo: this.repo,
       number,
@@ -162,10 +119,10 @@ export class GitHubClient {
   }
 
   public getLatestCommentBy = async (
-    pr: PullRequest,
+    pr: { number: number },
     login: string,
     debug: boolean = false
-  ): Promise<Comment | null> => {
+  ) => {
     const lastPRComment = await this.getLastPullRequestComment(pr.number, login)
     const lastIssueComment = await this.getLastIssueComment(pr.number, login)
 
@@ -219,13 +176,8 @@ export class GitHubClient {
     return null
   }
 
-  public getCommitsBy = async (
-    pr: PullRequest,
-    login: string
-  ): Promise<ReadonlyArray<Commit>> => {
-    const result: OctokitResponse<
-      Array<Commit>
-    > = await this.client.pullRequests.getCommits({
+  public getCommitsBy = async (pr: { number: number }, login: string) => {
+    const result = await this.client.pullRequests.getCommits({
       owner: this.owner,
       repo: this.repo,
       number: pr.number,

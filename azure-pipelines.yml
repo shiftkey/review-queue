@@ -7,16 +7,16 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '8.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.x'
+    displayName: 'Install Node.js'
 
-- task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-  inputs:
-    versionSpec: '1.9.4'
+  - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+    inputs:
+      versionSpec: '1.9.4'
 
-- script: |
-    npm install
-    ./node_modules/.bin/tsc
-  displayName: 'npm install and compile'
+  - script: |
+      yarn install
+      ./node_modules/.bin/tsc
+    displayName: 'yarn install and compile'
