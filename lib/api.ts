@@ -203,11 +203,7 @@ export class GitHubClient {
 
       newMergeableState = updatedPR.mergeable
 
-      if (newMergeableState === null) {
-        console.log(
-          ` - mergeable is still null for #${number} - checking again...`
-        )
-      } else {
+      if (newMergeableState !== null) {
         return newMergeableState
       }
     }
